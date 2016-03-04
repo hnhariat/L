@@ -329,6 +329,9 @@ public class LIconGridView extends ViewGroup {
 
 
             pntVisual.set(mScreenWidth * ratioX, (mScreenHeight - heightStatusBar) * ratioY);
+        } else {
+            Log.e("L.view.touch.xy", "out of bounds");
+            pntVisual.set(-1, -1);
         }
 
         Log.d("L.view.touch.xy", "(" + pntVisual.x + "," + pntVisual.y + ")");
@@ -341,7 +344,9 @@ public class LIconGridView extends ViewGroup {
         int top = LUtils.dip2px(getContext(), 4);
 
         int a = 0, b = 0;
-        if (visualPoint.x > 0 && visualPoint.x < mIconWidth + mWidthPadding * 0.5f) {
+        if (visualPoint.x < 0) {
+            a = -1;
+        } else if (visualPoint.x > 0 && visualPoint.x < mIconWidth + mWidthPadding * 0.5f) {
             // 1열
             a = 0;
         } else if (visualPoint.x > mIconWidth + mWidthPadding * 0.5f && visualPoint.x < mIconWidth * 2 + mWidthPadding * 1.5f) {

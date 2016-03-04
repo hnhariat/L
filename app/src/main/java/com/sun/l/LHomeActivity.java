@@ -1,21 +1,28 @@
 package com.sun.l;
 
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 
+import com.sun.l.manager.FileManager;
 import com.sun.l.utils.AnimationFactory;
 import com.sun.l.utils.LBitmapCache;
 
+import java.io.IOException;
 import java.util.List;
 
 public class LHomeActivity extends BaseActivity implements View.OnClickListener {
@@ -30,6 +37,10 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lhome);
         initialize();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
     }
 
     @Override
@@ -40,9 +51,30 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void initBackground() {
+
         Bitmap bmp = LBitmapCache.getInstance(getApplicationContext()).get(LConst.Key.background);
-        Drawable drawable = new BitmapDrawable(getResources(), bmp);
-        findViewById(R.id.root).setBackground(drawable);
+        if (bmp == null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            bmp = BitmapFactory.decodeFile(FileManager.getBackroundPath(), options);
+            FileManager.toCache(getApplicationContext(), bmp);
+        }
+        if (bmp != null) {
+            Drawable drawable = new BitmapDrawable(getResources(), bmp);
+            findViewById(R.id.root).setBackground(drawable);
+        } else {
+            findViewById(R.id.root).setBackgroundResource(R.drawable.danji_melon);
+        }
+        WallpaperManager myWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+        try {
+            if (bmp == null) {
+                myWallpaperManager.setResource(R.drawable.danji_melon);
+            } else {
+                myWallpaperManager.setBitmap(bmp);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override

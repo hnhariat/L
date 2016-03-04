@@ -18,7 +18,8 @@ import java.io.FileOutputStream;
  */
 public class FileManager {
     public static final String ROOT = "/L";
-    public static String FILE_BACKGROUND = "background.l";
+    public static String FILE_BACKGROUND = "/background.l";
+    private static String backroundPath;
 
     public static void initialize() {
         File file = new File(Environment.getExternalStorageDirectory() + ROOT);
@@ -62,7 +63,15 @@ public class FileManager {
         toCache(context, bitmap);
     }
 
-    public static void toCache(Context context, Bitmap bitmap) {
+    public static boolean toCache(Context context, Bitmap bitmap) {
+        if (bitmap == null) {
+            return false;
+        }
         LBitmapCache.getInstance(context).put(LConst.Key.background, bitmap);
+        return true;
+    }
+
+    public static String getBackroundPath() {
+        return Environment.getExternalStorageDirectory() + ROOT + "/" + FILE_BACKGROUND;
     }
 }

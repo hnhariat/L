@@ -2,6 +2,7 @@ package com.sun.l;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.sun.l.manager.FileManager;
 import com.sun.l.utils.LBitmapCache;
+
+import java.io.IOException;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
@@ -92,6 +95,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 FileManager.saveBitmapCache(getApplicationContext(), filePath);
                 Bitmap bmp = LBitmapCache.getInstance(getApplicationContext()).get(LConst.Key.background);
                 Drawable drawable = new BitmapDrawable(getResources(), bmp);
+
 
                 findViewById(R.id.root).setBackgroundDrawable(drawable);
                 setResult(RESULT_OK);

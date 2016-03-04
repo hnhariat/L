@@ -1,9 +1,11 @@
 package com.sun.l.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -58,7 +60,7 @@ public class LIcon extends View {
         int xPos = 0;
         int yPos = (int) ((canvas.getHeight() / 2) - ((mPaint.descent() + mPaint.ascent()) / 2));
         if (isIconFocused) {
-            canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), 0, 0, mPaintBackground);
+            canvas.drawRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 50, 50, mPaintBackground);
         }
         int iconBoundStart = canvas.getWidth() / 2 - iconSize / 2;
         appInfo.getIcon().setBounds(iconBoundStart, 0, iconBoundStart + iconSize, iconSize);
@@ -81,7 +83,30 @@ public class LIcon extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.w("L.icon", "child event : " + event.getAction());
-        return false;
+        Log.w("L.icon.child", "child event : " + event.getAction());
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                appInfo.getIcon().setAlpha(153);
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                appInfo.getIcon().setAlpha(255);
+                invalidate();
+                String pkg = getAppInfo().getPackageName();
+                if (TextUtils.isEmpty(pkg)) {
+                        return true;
+                }
+                Intent intent = getContext().getPackageManager().getLaunchIntentForPackage(pkg);
+                intent.setAction(Intent.ACTION_MAIN);
+                getContext().startActivity(intent);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                appInfo.getIcon().setAlpha(255);
+                invalidate();
+                break;
+        }
+        return true;
     }
 }
