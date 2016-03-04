@@ -28,4 +28,6 @@
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:rippleColor="@color/white_40"/>
+
+    <include layout="@layout/view_shortcut" />
 </FrameLayout>

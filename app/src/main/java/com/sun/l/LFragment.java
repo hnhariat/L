@@ -6,16 +6,16 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.Button;
 
 import com.sun.l.utils.AnimationFactory;
 import com.sun.l.widget.ITouchListener;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, ViewPager.OnPageChangeListener{
+public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, ViewPager.OnPageChangeListener {
 
     private ViewPager pager;
     private AdapterFrgMain adapter;
@@ -36,6 +36,11 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 
     private HashMap<Integer, ArrayList<DataApp>> mapIconPage = new HashMap<>();
     private FloatingActionButton fab;
+    private View viewShortcut;
+    private Button btn1;
+    private Button btn2;
+    private Button btn3;
+    private Button btn4;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,12 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         pager = (ViewPager) mRoot.findViewById(R.id.pager);
         pager.setPageMargin(LUtils.dip2px(getActivity().getApplicationContext(), 16));
         fab = (FloatingActionButton) mRoot.findViewById(R.id.btn);
+        viewShortcut = mRoot.findViewById(R.id.view_shortcut);
+
+        btn1 = (Button) viewShortcut.findViewById(R.id.btn1);
+        btn2 = (Button) viewShortcut.findViewById(R.id.btn2);
+        btn3 = (Button) viewShortcut.findViewById(R.id.btn3);
+        btn4 = (Button) viewShortcut.findViewById(R.id.btn4);
     }
 
     @Override
@@ -92,9 +103,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn) {
-//            Intent intent = new Intent(getActivity(), SettingActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivityForResult(intent, LConst.Request.Setting);
+
 
             Animation anim = AnimationFactory.scale(getContext(), 1f, 0f, 1f, 0f, 200);
             anim.setAnimationListener(new Animation.AnimationListener() {
@@ -106,7 +115,10 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     fab.setVisibility(View.INVISIBLE);
-                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    Intent intent = new Intent(getActivity(), SettingActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    getActivity().startActivityForResult(intent, LConst.Request.Setting);
+//                    startActivity(new Intent(Settings.ACTION_SETTINGS));
                 }
 
                 @Override
@@ -202,6 +214,11 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 //        anim.start();
     }
 
+    @Override
+    public void onDoubleTap(MotionEvent e) {
+//        viewShortcut.setVisibility(View.VISIBLE);
+    }
+
     private void switchTouchMode() {
         if (mLockAnimation) {
             return;
@@ -262,7 +279,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 
             @Override
             public void onAnimationEnd(Animation animation) {
-            fab.setVisibility(View.INVISIBLE);
+                fab.setVisibility(View.INVISIBLE);
             }
 
             @Override

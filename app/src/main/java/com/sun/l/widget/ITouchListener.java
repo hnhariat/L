@@ -1,5 +1,6 @@
 package com.sun.l.widget;
 
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -10,4 +11,5 @@ public interface ITouchListener {
     void onIconClick(View view);
     void onSlideUp(View view);
     void onSlideDown(View view);
+    void onDoubleTap(MotionEvent e);
 }

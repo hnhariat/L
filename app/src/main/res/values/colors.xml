@@ -7,4 +7,5 @@
     <color name="white_40">#66FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="black60">#99000000</color>
+    <color name="black">#000000</color>
 </resources>

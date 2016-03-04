@@ -60,7 +60,6 @@ public class LIconGridView extends ViewGroup {
 
         mIdelAreaRect = new RectF();
         gd = new GestureDetector(getContext(), gestureListener);
-
         for (int i = 0; i < 50; i++) {
             arrIconPosition[i] = new View[4];
         }
@@ -256,7 +255,7 @@ public class LIconGridView extends ViewGroup {
         return super.onTouchEvent(event);
     }
 
-    GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+    GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDown(MotionEvent e) {
             Log.d("L.view.touch", "onDown");
@@ -293,6 +292,22 @@ public class LIconGridView extends ViewGroup {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             Log.d("L.view.touch", "onFling");
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            onTouchListener.onDoubleTap(e);
+            return false;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
             return false;
         }
     };

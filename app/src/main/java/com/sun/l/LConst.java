@@ -13,5 +13,10 @@ public class LConst {
 
     public static class Request {
         public static final int Setting = 2342;
+        public static final int Picture = 2343;
+    }
+
+    public static class Key {
+        public static final String background = "background";
     }
 }

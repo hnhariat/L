@@ -2,6 +2,10 @@ package com.sun.l;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -10,6 +14,7 @@ import android.view.animation.Animation;
 import android.widget.ImageButton;
 
 import com.sun.l.utils.AnimationFactory;
+import com.sun.l.utils.LBitmapCache;
 
 import java.util.List;
 
@@ -25,6 +30,19 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lhome);
         initialize();
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        initBackground();
+    }
+
+
+    private void initBackground() {
+        Bitmap bmp = LBitmapCache.getInstance(getApplicationContext()).get(LConst.Key.background);
+        Drawable drawable = new BitmapDrawable(getResources(), bmp);
+        findViewById(R.id.root).setBackground(drawable);
     }
 
     @Override
@@ -144,4 +162,19 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
             return true;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        switch (requestCode) {
+            case LConst.Request.Setting:
+                initBackground();
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
