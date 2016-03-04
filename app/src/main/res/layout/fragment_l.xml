@@ -25,9 +25,10 @@
         android:src="@drawable/ic_settings_white_24dp"
         android:text="설정"
         android:visibility="invisible"
+        app:backgroundTint="@color/colorAccent"
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:rippleColor="@color/white_40"/>
 
-    <include layout="@layout/view_shortcut" />
+    <include layout="@layout/view_shortcut"/>
 </FrameLayout>
