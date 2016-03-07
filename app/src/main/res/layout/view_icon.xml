@@ -4,6 +4,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
+                        android:textSize="13dp"
                         android:text="asldfjslkf">
 
 </com.sun.l.widget.LIcon>

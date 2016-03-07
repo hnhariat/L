@@ -57,7 +57,7 @@ public class FrgL extends BaseFragment {
 //            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //            icon.setLayoutParams(params);
             icon.setAppInfo(info);
-            icon.setGravity(Gravity.CENTER);
+//            icon.setGravity(Gravity.CENTER);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -76,7 +76,6 @@ public class FrgL extends BaseFragment {
         viewIconPanel = (LIconGridView) mRoot;
         viewIconPanel.setOnTouchListener(onTouchListener);
     }
-
 
     public void setOnTouchListener(ITouchListener onTouchListener) {
         this.onTouchListener = onTouchListener;

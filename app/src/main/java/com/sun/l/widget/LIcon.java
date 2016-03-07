@@ -48,6 +48,7 @@ public class LIcon extends TextView {
         Random rand = new Random();
         backgroundcolor = Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
         iconSize = LUtils.dip2px(getContext(), 48);
+        setGravity(Gravity.CENTER);
 //        setBackgroundColor(backgroundcolor);
     }
 
@@ -81,7 +82,9 @@ public class LIcon extends TextView {
         this.appInfo = appInfo;
         setText(appInfo.getLabel());
         setTextColor(Color.WHITE);
-        setCompoundDrawablesWithIntrinsicBounds(null, appInfo.getIcon(), null, null);
+        appInfo.getIcon().setBounds(0, 0, iconSize, iconSize);
+        setCompoundDrawables(null, appInfo.getIcon(), null, null);
+
     }
 
     public DataApp getAppInfo() {

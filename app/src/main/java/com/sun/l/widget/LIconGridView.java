@@ -147,7 +147,7 @@ public class LIconGridView extends ViewGroup {
                 return;
             }
 
-            child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST));
+            child.measure(MeasureSpec.makeMeasureSpec(mIconWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST));
             curWidth = mIconWidth;
             curHeight = mIconWidth;
 
@@ -175,7 +175,6 @@ public class LIconGridView extends ViewGroup {
             curLeft += curWidth + paddingLeft;
             heightIconView = paddingTop + curTop + curHeight;
         }
-
         mIdelAreaRect.set(0, heightIconView, mScreenWidth, mScreenHeight);
     }
 
