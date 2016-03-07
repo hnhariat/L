@@ -1,5 +1,6 @@
 package com.sun.l;
 
+import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -49,7 +50,6 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         initBackground();
     }
 
-
     private void initBackground() {
 
         Bitmap bmp = LBitmapCache.getInstance(getApplicationContext()).get(LConst.Key.background);
@@ -60,14 +60,14 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         }
         if (bmp != null) {
             Drawable drawable = new BitmapDrawable(getResources(), bmp);
-            findViewById(R.id.root).setBackground(drawable);
+            findViewById(R.id.root).setBackgroundDrawable(drawable);
         } else {
             findViewById(R.id.root).setBackgroundResource(R.drawable.danji_melon);
         }
         WallpaperManager myWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
         try {
             if (bmp == null) {
-                myWallpaperManager.setResource(R.drawable.danji_melon);
+//                myWallpaperManager.setResource(R.drawable.danji_melon);
             } else {
                 myWallpaperManager.setBitmap(bmp);
             }
@@ -77,6 +77,7 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void initData() {
         super.initData();
@@ -145,6 +146,7 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d("L.key.event", keyCode+"");
         replaceFragment(frgDetail, false);
         if (isBackAnimationRunning) {
             return true;
@@ -204,6 +206,7 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         switch (requestCode) {
             case LConst.Request.Setting:
                 initBackground();
+                frgDetail.setSortOrder();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

@@ -41,11 +41,17 @@ public class AdapterFrgMain extends FragmentStatePagerAdapter {
     }
 
     public void setList(HashMap map) {
+        mMap.clear();
         this.mMap.putAll(map);
         notifyDataSetChanged();
     }
 
     public void setOnTouchListener(ITouchListener l) {
         onTouchListener = l;
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 }

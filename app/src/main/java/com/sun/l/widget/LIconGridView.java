@@ -1,10 +1,11 @@
 package com.sun.l.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.support.v4.view.ViewPager;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -25,6 +26,8 @@ public class LIconGridView extends ViewGroup {
     private final int TOUCH_MODE_SELECT = 21;
     private final int TOUCH_MODE_NONE = 2;
     private final RectF mIdelAreaRect;
+    private final int dp16;
+    private final int dp24;
     private RectF mTouchAreaRect;
 
     private int mTouchMode = TOUCH_MODE_NONE;
@@ -51,12 +54,13 @@ public class LIconGridView extends ViewGroup {
         super(context, attrs);
         mScreenWidth = getResources().getDisplayMetrics().widthPixels;
         mScreenHeight = getResources().getDisplayMetrics().heightPixels;
-        mViewMaxWidth = mScreenWidth ;//- LUtils.dip2px(context, 8);
+        mViewMaxWidth = mScreenWidth;//- LUtils.dip2px(context, 8);
         mIconWidth = LUtils.dip2px(context, 72);
         mWidthPadding = (mViewMaxWidth - (mIconWidth * 4)) / 3;
-
+        dp16 = LUtils.dip2px(context, 16);
+        dp24 = LUtils.dip2px(context, 24);
         mTouchAreaRect = new RectF();
-        mTouchAreaRect.set(mScreenWidth * 0.7f, mScreenHeight - (mScreenWidth - mScreenWidth * 0.7f), mScreenWidth, mScreenHeight);
+        mTouchAreaRect.set(mScreenWidth * 0.7f, mScreenHeight - (mScreenWidth - mScreenWidth * 0.7f), mScreenWidth - dp24, mScreenHeight - dp24);
 
         mIdelAreaRect = new RectF();
         gd = new GestureDetector(getContext(), gestureListener);
@@ -67,7 +71,7 @@ public class LIconGridView extends ViewGroup {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 
-        heightStatusBar = getStatusBarHeight();
+        heightStatusBar = LUtils.getStatusBarHeight(getContext());
         requestDisallowInterceptTouchEvent(true);
 
     }
@@ -76,6 +80,7 @@ public class LIconGridView extends ViewGroup {
         onTouchListener = l;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
@@ -114,7 +119,7 @@ public class LIconGridView extends ViewGroup {
         setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
                 resolveSizeAndState(maxHeight, expandSpec, childState << MEASURED_HEIGHT_STATE_SHIFT));
 
-        ViewPager.LayoutParams params = (ViewPager.LayoutParams) getLayoutParams();
+        CustomViewPager.LayoutParams params = (CustomViewPager.LayoutParams) getLayoutParams();
         params.height = getMeasuredHeight();
     }
 
@@ -133,7 +138,7 @@ public class LIconGridView extends ViewGroup {
 
         maxHeight = 0;
         curLeft = childLeft;
-        curTop = childTop;
+        curTop = childTop + heightStatusBar;
         int paddingLeft = 0, paddingTop = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
@@ -321,7 +326,7 @@ public class LIconGridView extends ViewGroup {
 
     public void setPositionMapping(PointF firstPoint, PointF realPoint) {
 
-        if (realPoint.x > mTouchAreaRect.left && realPoint.y > mTouchAreaRect.top) {
+        if (realPoint.x > mTouchAreaRect.left && realPoint.y > mTouchAreaRect.top && realPoint.x < mTouchAreaRect.right) {
             float ratioX, ratioY;
 
             ratioX = (realPoint.x - mTouchAreaRect.left) / (mTouchAreaRect.right - mTouchAreaRect.left);
@@ -379,7 +384,7 @@ public class LIconGridView extends ViewGroup {
 
     private int getIndexY(PointF visualPoint) {
         int topPadding = LUtils.dip2px(getContext(), 4);
-        topPadding = getPaddingTop();
+        topPadding = getPaddingTop() + heightStatusBar;
         int defaultSpaceY = heightStatusBar + topPadding;
         if (visualPoint.y < 0) {
             return -1;
@@ -446,7 +451,7 @@ public class LIconGridView extends ViewGroup {
 
     private int getCurrentPositionIndexY(PointF visualPoint) {
         int topPadding = LUtils.dip2px(getContext(), 4);
-        topPadding = getPaddingTop();
+        topPadding = getPaddingTop() + heightStatusBar;
         int defaultSpaceY = heightStatusBar + topPadding;
         if (visualPoint.y < 0) {
             return -1;
@@ -472,12 +477,4 @@ public class LIconGridView extends ViewGroup {
         return -1;
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 }

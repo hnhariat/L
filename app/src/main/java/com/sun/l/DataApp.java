@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
  * Created by sunje on 2016-02-26.
  */
 public class DataApp {
+    private long installedTime;
     int category = 0;
 
     String packageName = "";
@@ -15,10 +16,11 @@ public class DataApp {
     int idIconRes = 0;
     Drawable icon = null;
 
-    public DataApp(String label, String packageName, Drawable icon) {
+    public DataApp(String label, String packageName, Drawable icon, long installedTime) {
         this.label = label;
         this.packageName = packageName;
         this.icon = icon;
+        this.installedTime = installedTime;
     }
 
     public DataApp(int category, String label, String packageName) {
@@ -26,6 +28,10 @@ public class DataApp {
         this.label = label;
         this.packageName = packageName;
 
+    }
+
+    public long getInstalledTime() {
+        return installedTime;
     }
 
     public String getLabel() {

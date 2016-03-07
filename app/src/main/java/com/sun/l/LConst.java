@@ -19,4 +19,18 @@ public class LConst {
     public static class Key {
         public static final String background = "background";
     }
+
+    public static class PrefKey {
+        public static final String sort = "p.sort";
+    }
+
+    public static class PrefValue {
+        public static final String SORT_NAME = "p.v.sort.name";
+        public static final String SORT_TIME = "p.v.sort.time";
+        public static final String SORT_CUSTOM = "p.v.sort.custom";
+        public static final String SORT_COLOR = "p.v.sort.color";
+        public static final String SORT_RECOMMEND = "p.v.sort.recommend";
+        public static final String SORT_DEFAULT = "p.v.sort.default";
+
+    }
 }

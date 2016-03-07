@@ -3,12 +3,13 @@ package com.sun.l;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,15 +19,20 @@ import android.view.animation.Animation;
 import android.widget.Button;
 
 import com.sun.l.utils.AnimationFactory;
+import com.sun.l.utils.PrefManager;
+import com.sun.l.utils.SortOrderName;
+import com.sun.l.utils.SortOrderTime;
+import com.sun.l.widget.CustomViewPager;
 import com.sun.l.widget.ITouchListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, ViewPager.OnPageChangeListener {
+public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, CustomViewPager.OnPageChangeListener {
 
-    private ViewPager pager;
+    private CustomViewPager pager;
     private AdapterFrgMain adapter;
     private List<ResolveInfo> listIntent;
     private boolean mLockAnimation;
@@ -53,6 +59,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.fragment_l, null);
         initialize();
+        setSortOrder();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -62,14 +69,27 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+    }
 
+    private void initList() {
+        String pkg = "";
+        long firstInstallTime = 0L;
+        mapIconPage.clear();
         for (int i = 0; i < listIntent.size(); i++) {
             int page = i / 20;
 
             if (mapIconPage.size() == 0 || mapIconPage.get(page) == null) {
                 mapIconPage.put(page, new ArrayList<DataApp>());
             }
-            DataApp app = new DataApp(listIntent.get(i).loadLabel(getActivity().getApplicationContext().getPackageManager()).toString(), listIntent.get(i).activityInfo.packageName, listIntent.get(i).loadIcon(getActivity().getPackageManager()));
+            pkg = listIntent.get(i).loadLabel(getActivity().getApplicationContext().getPackageManager()).toString();
+            try {
+                PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo(pkg, PackageManager.GET_META_DATA);
+                firstInstallTime = packageInfo.firstInstallTime;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            DataApp app = new DataApp(pkg, listIntent.get(i).activityInfo.packageName, listIntent.get(i).loadIcon(getActivity().getPackageManager()), firstInstallTime);
             mapIconPage.get(page).add(app);
         }
     }
@@ -77,7 +97,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void initView() {
         super.initView();
-        pager = (ViewPager) mRoot.findViewById(R.id.pager);
+        pager = (CustomViewPager) mRoot.findViewById(R.id.pager);
         pager.setPageMargin(LUtils.dip2px(getActivity().getApplicationContext(), 16));
         fab = (FloatingActionButton) mRoot.findViewById(R.id.btn);
         viewShortcut = mRoot.findViewById(R.id.view_shortcut);
@@ -86,6 +106,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         btn2 = (Button) viewShortcut.findViewById(R.id.btn2);
         btn3 = (Button) viewShortcut.findViewById(R.id.btn3);
         btn4 = (Button) viewShortcut.findViewById(R.id.btn4);
+
     }
 
     @Override
@@ -226,6 +247,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         if (mModeTouch == MODE_NONE) {
             mModeTouch = MODE_ACTIVE;
             pager.requestDisallowInterceptTouchEvent(true);
+            resetAllViewState();
         } else {
             pager.requestDisallowInterceptTouchEvent(false);
             mModeTouch = MODE_NONE;
@@ -267,6 +289,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     }
 
     public void resetAllViewState() {
+        Log.d("sldfjsldfj", "sldfjsldfjsldfjsldkj");
         if (fab.getVisibility() == View.INVISIBLE) {
             return;
         }
@@ -287,9 +310,9 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 
             }
         });
-        fab.setAnimation(anim);
-        anim.start();
-//        fab.startAnimation(anim);
+//        fab.setAnimation(anim);
+//        anim.start();
+        fab.startAnimation(anim);
     }
 
     @Override
@@ -305,5 +328,23 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void setSortOrder() {
+        String sortOrder = PrefManager.getInstance().getString(getActivity().getApplicationContext(), LConst.PrefKey.sort);
+        if (sortOrder.equals(LConst.PrefValue.SORT_NAME)) {
+            Collections.sort(listIntent, new SortOrderName(getActivity().getPackageManager()));
+        } else if (sortOrder.equals(LConst.PrefValue.SORT_TIME)) {
+            Collections.sort(listIntent, new SortOrderTime(getActivity().getPackageManager()));
+        } else if (sortOrder.equals(LConst.PrefValue.SORT_CUSTOM)) {
+//            Collections.sort(listIntent, new SortOrderCustom());
+        } else if (sortOrder.equals(LConst.PrefValue.SORT_DEFAULT)) {
+            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            listIntent.clear();
+            listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+        }
+        initList();
+        adapter.setList(mapIconPage);
     }
 }

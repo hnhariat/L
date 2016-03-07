@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sun.l.DataApp;
 import com.sun.l.LUtils;
@@ -19,7 +22,7 @@ import java.util.Random;
 /**
  * Created by sunje on 2016-02-25.
  */
-public class LIcon extends View {
+public class LIcon extends TextView {
 
     private final int defaultIconSizePx = 48;
     private int backgroundcolor;
@@ -28,13 +31,14 @@ public class LIcon extends View {
     private DataApp appInfo;
     private boolean isIconFocused;
     private int iconSize;
+    int[] location = new int[2];
+    private Rect touchRect = new Rect();
 
     public LIcon(Context context) {
-
         super(context);
         initialize();
-
     }
+
 
     private void initialize() {
         mPaint.setColor(Color.WHITE);
@@ -62,11 +66,11 @@ public class LIcon extends View {
         if (isIconFocused) {
             canvas.drawRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 50, 50, mPaintBackground);
         }
-        int iconBoundStart = canvas.getWidth() / 2 - iconSize / 2;
-        appInfo.getIcon().setBounds(iconBoundStart, 0, iconBoundStart + iconSize, iconSize);
-        Log.d("klsdfjlsdfj", appInfo.getIcon().getIntrinsicWidth() + "/" + LUtils.dip2px(getContext(), 48));
-        canvas.drawText(appInfo.getLabel(), 20, iconSize + 40, mPaint);
-        appInfo.getIcon().draw(canvas);
+//        int iconBoundStart = canvas.getWidth() / 2 - iconSize / 2;
+//        appInfo.getIcon().setBounds(iconBoundStart, 0, iconBoundStart + iconSize, iconSize);
+//        Log.d("klsdfjlsdfj", appInfo.getIcon().getIntrinsicWidth() + "/" + LUtils.dip2px(getContext(), 48));
+//        canvas.drawText(appInfo.getLabel(), 20, iconSize + 40, mPaint);
+//        appInfo.getIcon().draw(canvas);
     }
 
     public void setIconFocus(boolean focused) {
@@ -75,6 +79,9 @@ public class LIcon extends View {
 
     public void setAppInfo(DataApp appInfo) {
         this.appInfo = appInfo;
+        setText(appInfo.getLabel());
+        setTextColor(Color.WHITE);
+        setCompoundDrawablesWithIntrinsicBounds(null, appInfo.getIcon(), null, null);
     }
 
     public DataApp getAppInfo() {
@@ -84,23 +91,28 @@ public class LIcon extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.w("L.icon.child", "child event : " + event.getAction());
-        switch(event.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 appInfo.getIcon().setAlpha(153);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (!inViewInBounds(this, event.getRawX(), event.getRawY())) {
+                    return false;
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 appInfo.getIcon().setAlpha(255);
                 invalidate();
-                String pkg = getAppInfo().getPackageName();
-                if (TextUtils.isEmpty(pkg)) {
+                if (inViewInBounds(this, event.getRawX(), event.getRawY())) {
+                    String pkg = getAppInfo().getPackageName();
+                    if (TextUtils.isEmpty(pkg)) {
                         return true;
+                    }
+                    Intent intent = getContext().getPackageManager().getLaunchIntentForPackage(pkg);
+                    intent.setAction(Intent.ACTION_MAIN);
+                    getContext().startActivity(intent);
                 }
-                Intent intent = getContext().getPackageManager().getLaunchIntentForPackage(pkg);
-                intent.setAction(Intent.ACTION_MAIN);
-                getContext().startActivity(intent);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 appInfo.getIcon().setAlpha(255);
@@ -108,5 +120,12 @@ public class LIcon extends View {
                 break;
         }
         return true;
+    }
+
+    private boolean inViewInBounds(View view, float x, float y) {
+        view.getDrawingRect(touchRect);
+        view.getLocationOnScreen(location);
+        touchRect.offset(location[0], location[1]);
+        return touchRect.contains((int) x, (int) y);
     }
 }
