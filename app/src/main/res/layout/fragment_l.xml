@@ -31,4 +31,10 @@
         app:rippleColor="@color/white_40"/>
 
     <include layout="@layout/view_shortcut"/>
+
+    <include
+        layout="@layout/view_page_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"/>
 </FrameLayout>

@@ -24,6 +24,7 @@ import com.sun.l.utils.SortOrderName;
 import com.sun.l.utils.SortOrderTime;
 import com.sun.l.widget.CustomViewPager;
 import com.sun.l.widget.ITouchListener;
+import com.sun.l.widget.PageIndicator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     private Button btn2;
     private Button btn3;
     private Button btn4;
+    private PageIndicator pagerIndicator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,8 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
             DataApp app = new DataApp(pkg, listIntent.get(i).activityInfo.packageName, listIntent.get(i).loadIcon(getActivity().getPackageManager()), firstInstallTime);
             mapIconPage.get(page).add(app);
         }
+
+        pagerIndicator.setPageCount(mapIconPage.size());
     }
 
     @Override
@@ -107,6 +111,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         btn3 = (Button) viewShortcut.findViewById(R.id.btn3);
         btn4 = (Button) viewShortcut.findViewById(R.id.btn4);
 
+        pagerIndicator = (PageIndicator) mRoot.findViewById(R.id.pager_indicator);
     }
 
     @Override
@@ -124,7 +129,6 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn) {
-
 
             Animation anim = AnimationFactory.scale(getContext(), 1f, 0f, 1f, 0f, 200);
             anim.setAnimationListener(new Animation.AnimationListener() {
@@ -317,12 +321,13 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        pagerIndicator.setPageOffset(position, positionOffset, pager.getDragDirection());
     }
 
     @Override
     public void onPageSelected(int position) {
         resetAllViewState();
+        pagerIndicator.setSelecetedPage(position);
     }
 
     @Override
