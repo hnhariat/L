@@ -116,6 +116,9 @@ public class LIcon extends TextView {
                     intent.setAction(Intent.ACTION_MAIN);
                     getContext().startActivity(intent);
                 }
+                if (getParent() instanceof LIconGridView) {
+                    ((LIconGridView)getParent()).childCancelFocus();
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 appInfo.getIcon().setAlpha(255);

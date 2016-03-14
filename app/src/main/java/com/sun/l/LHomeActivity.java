@@ -5,6 +5,7 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.sun.l.manager.FileManager;
 import com.sun.l.utils.AnimationFactory;
@@ -26,12 +28,13 @@ import com.sun.l.utils.LBitmapCache;
 import java.io.IOException;
 import java.util.List;
 
-public class LHomeActivity extends BaseActivity implements View.OnClickListener {
+public class LHomeActivity extends BaseActivity implements View.OnClickListener, ApplicationStateReceiver.OnApplicationStateListener {
 
     private ImageButton btnDetail;
     private LFragment frgDetail;
     private boolean isBackAnimationRunning;
     private View ctShortcut;
+    private ApplicationStateReceiver applicationStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,14 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
     protected void initialize() {
         super.initialize();
         initBackground();
+        applicationStateReceiver = new ApplicationStateReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_INSTALL_PACKAGE);
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addDataScheme("package");
+        applicationStateReceiver.setOnApplicationStateListener(this);
+        registerReceiver(applicationStateReceiver, filter);
     }
 
     private void initBackground() {
@@ -212,4 +223,32 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(applicationStateReceiver);
+    }
+
+    @Override
+    public void onInstall() {
+        frgDetail.initApplicationList();
+        Toast.makeText(this, "install", 0).show();
+    }
+
+    @Override
+    public void onAdd() {
+        frgDetail.initApplicationList();
+        Toast.makeText(this, "add", 0).show();
+    }
+
+    @Override
+    public void onRemove() {
+        frgDetail.initApplicationList();
+        Toast.makeText(this, "removed", 0).show();
+    }
 }

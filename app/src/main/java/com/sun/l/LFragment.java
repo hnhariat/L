@@ -68,9 +68,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void initData() {
         super.initData();
-        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+
     }
 
     private void initList() {
@@ -90,7 +88,6 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-
             DataApp app = new DataApp(pkg, listIntent.get(i).activityInfo.packageName, listIntent.get(i).loadIcon(getActivity().getPackageManager()), firstInstallTime);
             mapIconPage.get(page).add(app);
         }
@@ -336,6 +333,11 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     }
 
     public void setSortOrder() {
+
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+
         String sortOrder = PrefManager.getInstance().getString(getActivity().getApplicationContext(), LConst.PrefKey.sort);
         if (sortOrder.equals(LConst.PrefValue.SORT_NAME)) {
             Collections.sort(listIntent, new SortOrderName(getActivity().getPackageManager()));
@@ -344,12 +346,14 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         } else if (sortOrder.equals(LConst.PrefValue.SORT_CUSTOM)) {
 //            Collections.sort(listIntent, new SortOrderCustom());
         } else if (sortOrder.equals(LConst.PrefValue.SORT_DEFAULT)) {
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            listIntent.clear();
-            listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+//            listIntent = getActivity().getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
         }
         initList();
+        adapter.setList(mapIconPage);
+    }
+
+    public void initApplicationList() {
+        setSortOrder();
         adapter.setList(mapIconPage);
     }
 }

@@ -238,7 +238,9 @@ public class LIconGridView extends ViewGroup {
                     }
                     onTouchListener.onLongPress(LIconGridView.this);
                 } else if (mTouchMode == TOUCH_MODE_NONE) {
+                    Log.d("L.icon.child", "UP.touch mode none");
                     if (!mIdelAreaRect.contains(pntFirst.x, pntFirst.y)) {
+                        Log.d("L.icon.child", "contains icon area");
                         View finalFocusedView = getCurrentPositionAppInfo(pntReal);
                         if (finalFocusedView != null) {
                             String pkg = ((LIcon) finalFocusedView).getAppInfo().getPackageName();
@@ -250,8 +252,17 @@ public class LIconGridView extends ViewGroup {
                             getContext().startActivity(intent);
                             releaseView(finalFocusedView);
                         }
+                    } else {
+                        Log.d("L.icon.child", "not contains icon area");
+                        if (pntFirst.y - event.getRawY() > 120) {
+                            // drag up
+                            onTouchListener.onSlideUp(this);
+                        } else if (pntFirst.y - event.getRawY() < -120) {
+                            onTouchListener.onSlideDown(this);
+                        }
                     }
                 }
+
                 mTouchMode = TOUCH_MODE_NONE;
                 return true;
         }
@@ -476,4 +487,9 @@ public class LIconGridView extends ViewGroup {
         return -1;
     }
 
+    public void childCancelFocus() {
+        if (onTouchListener != null) {
+            onTouchListener.onSlideDown(this);
+        }
+    }
 }
