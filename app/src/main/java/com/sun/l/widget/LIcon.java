@@ -35,6 +35,7 @@ public class LIcon extends TextView {
     int[] location = new int[2];
     private Rect touchRect = new Rect();
     private int dp2;
+    private boolean mIsExited;
 
     public LIcon(Context context) {
         super(context);
@@ -103,12 +104,14 @@ public class LIcon extends TextView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mIsExited = false;
                 appInfo.getIcon().setAlpha(153);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!inViewInBounds(this, event.getRawX(), event.getRawY())) {
                     Log.d("L.icon.child", "out of bounds!");
+                    mIsExited = true;
                     appInfo.getIcon().setAlpha(255);
                     invalidate();
                     return false;
@@ -117,7 +120,7 @@ public class LIcon extends TextView {
             case MotionEvent.ACTION_UP:
                 appInfo.getIcon().setAlpha(255);
                 invalidate();
-                if (inViewInBounds(this, event.getRawX(), event.getRawY())) {
+                if (inViewInBounds(this, event.getRawX(), event.getRawY()) && !mIsExited) {
                     String pkg = getAppInfo().getPackageName();
                     if (TextUtils.isEmpty(pkg)) {
                         return true;
