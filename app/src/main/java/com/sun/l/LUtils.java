@@ -14,6 +14,7 @@ public class LUtils {
     public static int getScreenHeight(Context context) {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
+
     public static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -22,4 +23,6 @@ public class LUtils {
         }
         return result;
     }
+
+//    public static
 }

@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import com.sun.l.LUtils;
+
 /**
  * Created by sunje on 2016-03-11.
  */
@@ -32,7 +34,7 @@ public class PageIndicator extends View {
         mPaintStateSelected.setColor(Color.WHITE);
         mPaintStateSelected.setStyle(Paint.Style.FILL);
 
-        mSizePagePoint = 20;
+        mSizePagePoint = LUtils.dip2px(context, 9);
         mScreenWidth = getResources().getDisplayMetrics().widthPixels;
     }
 

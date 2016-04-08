@@ -28,6 +28,7 @@ public class LIconGridView extends ViewGroup {
     private final RectF mIdelAreaRect;
     private final int dp16;
     private final int dp24;
+    private int dp4;
     private RectF mTouchAreaRect;
 
     private int mTouchMode = TOUCH_MODE_NONE;
@@ -57,6 +58,7 @@ public class LIconGridView extends ViewGroup {
         mViewMaxWidth = mScreenWidth;//- LUtils.dip2px(context, 8);
         mIconWidth = LUtils.dip2px(context, 72);
         mWidthPadding = (mViewMaxWidth - (mIconWidth * 4)) / 3;
+        dp4 = LUtils.dip2px(context, 4);
         dp16 = LUtils.dip2px(context, 16);
         dp24 = LUtils.dip2px(context, 24);
         mTouchAreaRect = new RectF();
@@ -149,11 +151,11 @@ public class LIconGridView extends ViewGroup {
 
             child.measure(MeasureSpec.makeMeasureSpec(mIconWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST));
             curWidth = mIconWidth;
-            curHeight = mIconWidth;
+            curHeight = mIconWidth + (dp4 * 2);
 
             if (curLeft + curWidth >= childRight) {
                 curLeft = childLeft;
-                curTop += maxHeight + mWidthPadding;
+                curTop += maxHeight + dp4;
                 maxHeight = 0;
             }
 
@@ -184,7 +186,7 @@ public class LIconGridView extends ViewGroup {
 
         pntReal.set(event.getRawX(), event.getRawY());
         Log.i("L.icon", mTouchMode == TOUCH_MODE_SELECT ? "touch mode select" : "touch mode none");
-        Log.i("L.icon", "event : " + event.getAction());
+        Log.i("L.view.touch", "LIconGridView.onTouchEvent : " + event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 pntFirst.set(event.getRawX(), event.getRawY());

@@ -32,11 +32,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private Button btnSortTime;
     private Button btnSortCustom;
     private String mSortOrder;
+    private String mGroupState;
+
     private Button btnSortDefault;
     private Button btnMakeFolder;
     private ScrollView scrollView;
     private LinearLayout container;
     private View folder;
+    private Button btnSortSimple;
+    private Intent mIntentResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void initData() {
         super.initData();
         mSortOrder = PrefManager.getInstance().getString(getApplicationContext(), LConst.PrefKey.sort);
+        mGroupState = PrefManager.getInstance().getString(getApplicationContext(), LConst.PrefKey.group);
+        mIntentResult = new Intent();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -66,6 +72,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         btnSortCustom = (Button) findViewById(R.id.btn3);
         btnSortDefault = (Button) findViewById(R.id.btn6);
 
+        btnSortSimple = (Button) findViewById(R.id.btn7);
         btnMakeFolder = (Button) findViewById(R.id.btn_make_folder);
         scrollView = (ScrollView)findViewById(R.id.root);
 
@@ -77,7 +84,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             public void run() {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LUtils.getScreenHeight(getApplicationContext()) - btnMakeFolder.getHeight() - LUtils.getStatusBarHeight(getApplicationContext()));
                 folder.setLayoutParams(params);
-               }
+            }
         });
 
         container = (LinearLayout) findViewById(R.id.container);
@@ -93,6 +100,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         btnSortTime.setOnClickListener(this);
         btnSortCustom.setOnClickListener(this);
         btnSortDefault.setOnClickListener(this);
+        btnSortSimple.setOnClickListener(this);
+
         btnMakeFolder.setOnClickListener(this);
     }
 
@@ -135,6 +144,18 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             });
             animator.setDuration(350);
             animator.start();
+        } else if (id == R.id.btn7) {
+            setSimpleGroup(LConst.PrefValue.GROUP_NAME_SIMILAR);
+        }
+    }
+
+    private void setSimpleGroup(String value) {
+        PrefManager.getInstance().putString(getApplicationContext(), LConst.PrefKey.group, value);
+        setResult(RESULT_OK);
+        if (!mGroupState.equals(value)) {
+        } else {
+            // TODO : 모든 설정들의 변함을 감지해야함
+//            setResult(RESULT_CANCELED);
         }
     }
 

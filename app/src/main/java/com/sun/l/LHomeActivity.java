@@ -218,6 +218,7 @@ public class LHomeActivity extends BaseActivity implements View.OnClickListener,
             case LConst.Request.Setting:
                 initBackground();
                 frgDetail.setSortOrder();
+                frgDetail.setGrouping();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

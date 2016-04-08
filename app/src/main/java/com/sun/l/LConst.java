@@ -22,6 +22,7 @@ public class LConst {
 
     public static class PrefKey {
         public static final String sort = "p.sort";
+        public static final String group = "p.group";
     }
 
     public static class PrefValue {
@@ -31,6 +32,9 @@ public class LConst {
         public static final String SORT_COLOR = "p.v.sort.color";
         public static final String SORT_RECOMMEND = "p.v.sort.recommend";
         public static final String SORT_DEFAULT = "p.v.sort.default";
+
+        public static final String GROUP_DEFAULT = "p.v.group.default";
+        public static final String GROUP_NAME_SIMILAR= "p.v.group.similar";
 
     }
 }

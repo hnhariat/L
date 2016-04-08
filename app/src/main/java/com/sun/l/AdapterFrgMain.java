@@ -26,7 +26,8 @@ public class AdapterFrgMain extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment frg = FrgL.newInstance(mMap.get(position), onTouchListener);
+        int realPosition = position % getCount();
+        Fragment frg = FrgL.newInstance(mMap.get(realPosition), onTouchListener);
         return frg;
     }
 

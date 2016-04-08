@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +34,7 @@ public class LIcon extends TextView {
     private int iconSize;
     int[] location = new int[2];
     private Rect touchRect = new Rect();
+    private int dp2;
 
     public LIcon(Context context) {
         super(context);
@@ -50,6 +52,9 @@ public class LIcon extends TextView {
         iconSize = LUtils.dip2px(getContext(), 48);
         setGravity(Gravity.CENTER);
 //        setBackgroundColor(backgroundcolor);
+        dp2 = LUtils.dip2px(getContext(), 2);
+        setPadding(dp2, dp2, dp2, dp2);
+        setLineSpacing(-TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2.0f, getResources().getDisplayMetrics()), 1.0f);
     }
 
     public LIcon(Context context, AttributeSet attrs) {
@@ -94,6 +99,8 @@ public class LIcon extends TextView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.w("L.icon.child", "child event : " + event.getAction());
+
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 appInfo.getIcon().setAlpha(153);
@@ -101,6 +108,9 @@ public class LIcon extends TextView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!inViewInBounds(this, event.getRawX(), event.getRawY())) {
+                    Log.d("L.icon.child", "out of bounds!");
+//                    appInfo.getIcon().setAlpha(255);
+//                    invalidate();
                     return false;
                 }
                 break;
@@ -117,7 +127,7 @@ public class LIcon extends TextView {
                     getContext().startActivity(intent);
                 }
                 if (getParent() instanceof LIconGridView) {
-                    ((LIconGridView)getParent()).childCancelFocus();
+                    ((LIconGridView) getParent()).childCancelFocus();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:

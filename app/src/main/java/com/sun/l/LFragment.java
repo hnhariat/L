@@ -10,6 +10,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -355,5 +360,14 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     public void initApplicationList() {
         setSortOrder();
         adapter.setList(mapIconPage);
+    }
+
+    public void setGrouping() {
+        String grouping = PrefManager.getInstance().getString(getActivity().getApplicationContext(), LConst.PrefKey.group);
+        if (TextUtils.isEmpty(grouping)) {
+
+        } else if (grouping.equals(LConst.PrefValue.GROUP_NAME_SIMILAR)){
+
+        }
     }
 }
