@@ -109,8 +109,8 @@ public class LIcon extends TextView {
             case MotionEvent.ACTION_MOVE:
                 if (!inViewInBounds(this, event.getRawX(), event.getRawY())) {
                     Log.d("L.icon.child", "out of bounds!");
-//                    appInfo.getIcon().setAlpha(255);
-//                    invalidate();
+                    appInfo.getIcon().setAlpha(255);
+                    invalidate();
                     return false;
                 }
                 break;
