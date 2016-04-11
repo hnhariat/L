@@ -6,22 +6,27 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.sun.l.adapters.AdapterMakeGroup;
 import com.sun.l.manager.FileManager;
+import com.sun.l.models.DataFolder;
 import com.sun.l.utils.LBitmapCache;
 import com.sun.l.utils.PrefManager;
+
+import java.util.ArrayList;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
@@ -41,6 +46,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private View folder;
     private Button btnSortSimple;
     private Intent mIntentResult;
+    private RecyclerView gridFolder;
+    private ArrayList<DataFolder> mListFolder;
+    private AdapterMakeGroup adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         mSortOrder = PrefManager.getInstance().getString(getApplicationContext(), LConst.PrefKey.sort);
         mGroupState = PrefManager.getInstance().getString(getApplicationContext(), LConst.PrefKey.group);
         mIntentResult = new Intent();
+        mListFolder = new ArrayList<DataFolder>();
+        mListFolder.add(new DataFolder("추가", DataFolder.TYPE_NEW, -1));
+        mListFolder.add(new DataFolder("추가", DataFolder.TYPE_NEW, -1));
+        mListFolder.add(new DataFolder("추가", DataFolder.TYPE_NEW, -1));
+        mListFolder.add(new DataFolder("추가", DataFolder.TYPE_NEW, -1));
+        //TODO : add all folders
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -74,10 +88,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         btnSortSimple = (Button) findViewById(R.id.btn7);
         btnMakeFolder = (Button) findViewById(R.id.btn_make_folder);
-        scrollView = (ScrollView)findViewById(R.id.root);
+        scrollView = (ScrollView) findViewById(R.id.root);
 
-        folder = new View(this);
-        folder.setBackgroundColor(Color.BLACK);
+        folder = View.inflate(getApplicationContext(), R.layout.item_make_group, null);
+        gridFolder = (RecyclerView) folder.findViewById(R.id.rcv);
+        GridLayoutManager gm = new GridLayoutManager(getApplicationContext(), 4);
+        gridFolder.setLayoutManager(gm);
 
         btnMakeFolder.post(new Runnable() {
             @Override
@@ -103,6 +119,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         btnSortSimple.setOnClickListener(this);
 
         btnMakeFolder.setOnClickListener(this);
+
+        adapter = new AdapterMakeGroup();
+        adapter.setList(mListFolder);
+        gridFolder.setAdapter(adapter);
     }
 
     @Override

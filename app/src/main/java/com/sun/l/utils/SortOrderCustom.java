@@ -1,6 +1,6 @@
 package com.sun.l.utils;
 
-import com.sun.l.DataApp;
+import com.sun.l.models.DataApp;
 
 import java.text.Collator;
 import java.util.Comparator;

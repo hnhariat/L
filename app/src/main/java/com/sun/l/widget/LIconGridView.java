@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.sun.l.DataApp;
+import com.sun.l.models.DataApp;
 import com.sun.l.LUtils;
 
 /**

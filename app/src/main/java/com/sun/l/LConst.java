@@ -37,4 +37,9 @@ public class LConst {
         public static final String GROUP_NAME_SIMILAR= "p.v.group.similar";
 
     }
+
+    public static class Return {
+        public static final int SUCC = 0;
+        public static final int FAIL = -1;
+    }
 }

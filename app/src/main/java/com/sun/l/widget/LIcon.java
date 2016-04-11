@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sun.l.DataApp;
+import com.sun.l.models.DataApp;
 import com.sun.l.LUtils;
 
 import java.util.Random;
