@@ -2,11 +2,13 @@ package com.sun.l;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +28,7 @@ import com.sun.l.utils.SortOrderName;
 import com.sun.l.utils.SortOrderTime;
 import com.sun.l.widget.CustomViewPager;
 import com.sun.l.widget.ITouchListener;
+import com.sun.l.widget.LoopViewPager;
 import com.sun.l.widget.PageIndicator;
 
 import java.util.ArrayList;
@@ -33,9 +36,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, CustomViewPager.OnPageChangeListener {
+public class LFragment extends BaseFragment implements ITouchListener, View.OnClickListener, CustomViewPager.OnPageChangeListener, AdapterFrgMain.Callback {
 
-    private CustomViewPager pager;
+    private LoopViewPager pager;
     private AdapterFrgMain adapter;
     private List<ResolveInfo> listIntent;
     private boolean mLockAnimation;
@@ -100,7 +103,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     @Override
     public void initView() {
         super.initView();
-        pager = (CustomViewPager) mRoot.findViewById(R.id.pager);
+        pager = (LoopViewPager) mRoot.findViewById(R.id.pager);
         pager.setPageMargin(LUtils.dip2px(getActivity().getApplicationContext(), 16));
         fab = (FloatingActionButton) mRoot.findViewById(R.id.btn);
         viewShortcut = mRoot.findViewById(R.id.view_shortcut);
@@ -117,12 +120,17 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
     public void initControl() {
         super.initControl();
         adapter = new AdapterFrgMain(getChildFragmentManager());
+        adapter.setCallback(this);
         adapter.setOnTouchListener(this);
-        pager.setAdapter(adapter);
         adapter.setList(mapIconPage);
+
+        pager.setAdapter(adapter);
+        pager.notifyDataSetChanged();
 
         fab.setOnClickListener(this);
         pager.addOnPageChangeListener(this);
+
+        pager.setCurrentItem(0, false);
     }
 
     @Override
@@ -243,6 +251,7 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 //        viewShortcut.setVisibility(View.VISIBLE);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void switchTouchMode() {
         if (mLockAnimation) {
             return;
@@ -320,13 +329,22 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        pagerIndicator.setPageOffset(position, positionOffset, pager.getDragDirection());
+        int realPosition = position;
+        if (position >= adapter.getCount()) {
+            realPosition = 0;
+        }
+        pagerIndicator.setPageOffset(realPosition, positionOffset, pager.getDragDirection());
     }
 
     @Override
     public void onPageSelected(int position) {
+        Log.d("L.viewpager.selected", "pos : " + position);
         resetAllViewState();
-        pagerIndicator.setSelecetedPage(position);
+        int realPosition = position;
+        if (position >= adapter.getCount()) {
+            realPosition = 0;
+        }
+        pagerIndicator.setSelecetedPage(realPosition);
     }
 
     @Override
@@ -366,5 +384,10 @@ public class LFragment extends BaseFragment implements ITouchListener, View.OnCl
         } else if (grouping.equals(LConst.PrefValue.GROUP_NAME_SIMILAR)){
 
         }
+    }
+
+    @Override
+    public void notifyDatasetChanged() {
+        pager.notifyDataSetChanged();
     }
 }

@@ -1,9 +1,11 @@
 package com.sun.l.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,7 @@ public class PageIndicator extends View {
         mScreenWidth = getResources().getDisplayMetrics().widthPixels;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -46,13 +49,9 @@ public class PageIndicator extends View {
         start = (mScreenWidth - (mSizePagePoint * count + (mSizePagePoint * (count - 1)))) / 2;
         Paint paint = null;
         for (int i = 0; i < count; i++) {
-            Log.i("L.view.onDraw", "L : " + (mScreenWidth - (mSizePagePoint * count)) / 2);
-//            if (currentPage == i) {
-//                paint = mPaintStateSelected;
-//            } else {
+            Log.i("L.PagerIndicator", "L : " + (mScreenWidth - (mSizePagePoint * count)) / 2);
             paint = mPaintStateNone;
             canvas.drawRoundRect(start + ((i * 2) * mSizePagePoint), 0, start + mSizePagePoint + ((i * 2) * mSizePagePoint), mSizePagePoint, 50, 50, paint);
-//            }
         }
         Log.d("sdkfjlsdfj", (pageOffset * mSizePagePoint) + "");
         canvas.drawRoundRect((pageOffset * mSizePagePoint * 2) + start + ((currentPage * 2) * mSizePagePoint), 0, (2 * pageOffset * mSizePagePoint) +
@@ -60,14 +59,15 @@ public class PageIndicator extends View {
     }
 
     public void setPageCount(int count) {
+        Log.d("L.pageindicator", "count : " + count);
         this.count = count;
         invalidate();
     }
 
     public void setSelecetedPage(int page) {
-//        this.currentPage = page;
         pageOffset = 0;
-        Log.d("L.view.pageindicator", "page : " + page);
+        currentPage = page;
+        Log.d("L.pageindicator.cur", "selected page : " + page);
         invalidate();
     }
 
@@ -75,7 +75,7 @@ public class PageIndicator extends View {
         this.pageOffset = offset;
         this.direction = direction;
         this.currentPage = page;
-        Log.d("L.view.pageindicator", "page : " + page + " offset : " + offset + " direction : " + (direction == 0 ? "to Prev" : "to next"));
+        Log.d("L.pageindicator.offset", "page : " + page + " offset : " + offset + " direction : " + (direction == 0 ? "to Prev" : "to next"));
         invalidate();
     }
 }

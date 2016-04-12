@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 
-    <com.sun.l.widget.CustomViewPager
+    <com.sun.l.widget.LoopViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white_0"></com.sun.l.widget.CustomViewPager>
+        android:background="@color/white_0"></com.sun.l.widget.LoopViewPager>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn"
